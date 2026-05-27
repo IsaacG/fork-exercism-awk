@@ -1,5 +1,5 @@
 # Instructions append
 
-## Implementation
+## Track specific instructions
 
 If the given string is an isogram, return `"true"`, otherwise return `"false"`.
