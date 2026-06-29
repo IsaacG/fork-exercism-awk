@@ -1,236 +1,221 @@
 #!/usr/bin/env bats
 load bats-extra
 
-#
-# *** Input and Output numbers are expressed in hexadecimal.
-#
+# generated on 2026-06-30T15:58:31+00:00
 
-# Encode a series of integers, producing a series of bytes.
-
-@test "encode zero" {
-    #[[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "00"
+@test "zero" {
+    # [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+    run gawk -f variable-length-quantity.awk <<< "[0]"
     assert_success
-    assert_output "00"
+    assert_output "[0]"
 }
 
-@test "encode arbitrary single byte" {
+@test "arbitrary single byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "40"
+    run gawk -f variable-length-quantity.awk <<< "[64]"
     assert_success
-    assert_output "40"
+    assert_output "[64]"
 }
 
-@test "encode asymmetric single byte" {
+@test "asymmetric single byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "53"
+    run gawk -f variable-length-quantity.awk <<< "[83]"
     assert_success
-    assert_output "53"
+    assert_output "[83]"
 }
 
-@test "encode largest single byte" {
+@test "largest single byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "7F"
+    run gawk -f variable-length-quantity.awk <<< "[127]"
     assert_success
-    assert_output "7F"
+    assert_output "[127]"
 }
 
-@test "encode smallest double byte" {
+@test "smallest double byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "80"
+    run gawk -f variable-length-quantity.awk <<< "[128]"
     assert_success
-    assert_output "81 00"
+    assert_output "[129, 0]"
 }
 
-@test "encode arbitrary double byte" {
+@test "arbitrary double byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "2000"
+    run gawk -f variable-length-quantity.awk <<< "[8192]"
     assert_success
-    assert_output "C0 00"
+    assert_output "[192, 0]"
 }
 
-@test "encode asymmetric double byte" {
+@test "asymmetric double byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "AD"
+    run gawk -f variable-length-quantity.awk <<< "[173]"
     assert_success
-    assert_output "81 2D"
+    assert_output "[129, 45]"
 }
 
-@test "encode largest double byte" {
+@test "largest double byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "3FFF"
+    run gawk -f variable-length-quantity.awk <<< "[16383]"
     assert_success
-    assert_output "FF 7F"
+    assert_output "[255, 127]"
 }
 
-@test "encode smallest triple byte" {
+@test "smallest triple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "4000"
+    run gawk -f variable-length-quantity.awk <<< "[16384]"
     assert_success
-    assert_output "81 80 00"
+    assert_output "[129, 128, 0]"
 }
 
-@test "encode arbitrary triple byte" {
+@test "arbitrary triple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "100000"
+    run gawk -f variable-length-quantity.awk <<< "[1048576]"
     assert_success
-    assert_output "C0 80 00"
+    assert_output "[192, 128, 0]"
 }
 
-@test "encode asymmetric triple byte" {
+@test "asymmetric triple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "1D59C"
+    run gawk -f variable-length-quantity.awk <<< "[120220]"
     assert_success
-    assert_output "87 AB 1C"
+    assert_output "[135, 171, 28]"
 }
 
-@test "encode largest triple byte" {
+@test "largest triple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "1FFFFF"
+    run gawk -f variable-length-quantity.awk <<< "[2097151]"
     assert_success
-    assert_output "FF FF 7F"
+    assert_output "[255, 255, 127]"
 }
 
-@test "encode smallest quadruple byte" {
+@test "smallest quadruple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "200000"
+    run gawk -f variable-length-quantity.awk <<< "[2097152]"
     assert_success
-    assert_output "81 80 80 00"
+    assert_output "[129, 128, 128, 0]"
 }
 
-@test "encode arbitrary quadruple byte" {
+@test "arbitrary quadruple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "8000000"
+    run gawk -f variable-length-quantity.awk <<< "[134217728]"
     assert_success
-    assert_output "C0 80 80 00"
+    assert_output "[192, 128, 128, 0]"
 }
 
-@test "encode asymmetric quadruple byte" {
+@test "asymmetric quadruple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "357704"
+    run gawk -f variable-length-quantity.awk <<< "[3503876]"
     assert_success
-    assert_output "81 D5 EE 04"
+    assert_output "[129, 213, 238, 4]"
 }
 
-@test "encode largest quadruple byte" {
+@test "largest quadruple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "FFFFFFF"
+    run gawk -f variable-length-quantity.awk <<< "[268435455]"
     assert_success
-    assert_output "FF FF FF 7F"
+    assert_output "[255, 255, 255, 127]"
 }
 
-@test "encode smallest quintuple byte" {
+@test "smallest quintuple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "10000000"
+    run gawk -f variable-length-quantity.awk <<< "[268435456]"
     assert_success
-    assert_output "81 80 80 80 00"
+    assert_output "[129, 128, 128, 128, 0]"
 }
 
-@test "encode arbitrary quintuple byte" {
+@test "arbitrary quintuple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "FF000000"
+    run gawk -f variable-length-quantity.awk <<< "[4278190080]"
     assert_success
-    assert_output "8F F8 80 80 00"
+    assert_output "[143, 248, 128, 128, 0]"
 }
 
-@test "encode asymmetric quintuple byte" {
+@test "asymmetric quintuple byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "86656105"
+    run gawk -f variable-length-quantity.awk <<< "[2254790917]"
     assert_success
-    assert_output "88 B3 95 C2 05"
+    assert_output "[136, 179, 149, 194, 5]"
 }
 
-@test "encode maximum 32-bit integer input" {
+@test "maximum 32-bit integer input" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "FFFFFFFF"
+    run gawk -f variable-length-quantity.awk <<< "[4294967295]"
     assert_success
-    assert_output "8F FF FF FF 7F"
+    assert_output "[143, 255, 255, 255, 127]"
 }
 
-@test "encode two single-byte values" {
+@test "two single-byte values" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "40 7F"
+    run gawk -f variable-length-quantity.awk <<< "[64, 127]"
     assert_success
-    assert_output "40 7F"
+    assert_output "[64, 127]"
 }
 
-@test "encode two multi-byte values" {
+@test "two multi-byte values" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "4000 123456"
+    run gawk -f variable-length-quantity.awk <<< "[16384, 1193046]"
     assert_success
-    assert_output "81 80 00 C8 E8 56"
+    assert_output "[129, 128, 0, 200, 232, 86]"
 }
 
-@test "encode many multi-byte values" {
+@test "many multi-byte values" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=encode <<< "2000 123456 FFFFFFF 00 3FFF 4000"
+    run gawk -f variable-length-quantity.awk <<< "[8192, 1193046, 268435455, 0, 16383, 16384]"
     assert_success
-    assert_output "C0 00 C8 E8 56 FF FF FF 7F 00 FF 7F 81 80 00"
+    assert_output "[192, 0, 200, 232, 86, 255, 255, 255, 127, 0, 255, 127, 129, 128, 0]"
 }
 
-# Decode a series of bytes, producing a series of integers.
-
-@test "decode one byte" {
+@test "one byte" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=decode <<< "7F"
+    run gawk -f variable-length-quantity.awk <<< "[127]"
     assert_success
-    assert_output "7F"
+    assert_output "[127]"
 }
 
-@test "decode two bytes" {
+@test "two bytes" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=decode <<< "C0 00"
+    run gawk -f variable-length-quantity.awk <<< "[192, 0]"
     assert_success
-    assert_output "2000"
+    assert_output "[8192]"
 }
 
-@test "decode three bytes" {
+@test "three bytes" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=decode <<< "FF FF 7F"
+    run gawk -f variable-length-quantity.awk <<< "[255, 255, 127]"
     assert_success
-    assert_output "1FFFFF"
+    assert_output "[2097151]"
 }
 
-@test "decode four bytes" {
+@test "four bytes" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=decode <<< "81 80 80 00"
+    run gawk -f variable-length-quantity.awk <<< "[129, 128, 128, 0]"
     assert_success
-    assert_output "200000"
+    assert_output "[2097152]"
 }
 
-@test "decode maximum 32-bit integer" {
+@test "maximum 32-bit integer" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=decode <<< "8F FF FF FF 7F"
+    run gawk -f variable-length-quantity.awk <<< "[143, 255, 255, 255, 127]"
     assert_success
-    assert_output "FFFFFFFF"
+    assert_output "[4294967295]"
 }
 
-@test "decode multiple values" {
+@test "incomplete sequence causes error" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=decode <<< "C0 00 C8 E8 56 FF FF FF 7F 00 FF 7F 81 80 00"
-    assert_success
-    assert_output "2000 123456 FFFFFFF 00 3FFF 4000"
-}
-
-# Some error conditions
-
-@test "decode incomplete sequence causes error" {
-    [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=decode <<< "FF"
+    run gawk -f variable-length-quantity.awk <<< "[255]"
     assert_failure
-    assert_output --partial "incomplete byte sequence"
+    assert_output "incomplete sequence"
 }
 
-@test "decode incomplete sequence causes error, even if value is zero" {
+@test "incomplete sequence causes error, even if value is zero" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=decode <<< "80"
+    run gawk -f variable-length-quantity.awk <<< "[128]"
     assert_failure
-    assert_output --partial "incomplete byte sequence"
+    assert_output "incomplete sequence"
 }
 
-@test "invalid subcommand" {
+@test "multiple values" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f variable-length-quantity.awk -v action=hello <<< "80"
-    assert_failure
-    assert_output --partial "unknown action"
+    run gawk -f variable-length-quantity.awk <<< "[192, 0, 200, 232, 86, 255, 255, 255, 127, 0, 255, 127, 129, 128, 0]"
+    assert_success
+    assert_output "[8192, 1193046, 268435455, 0, 16383, 16384]"
 }
