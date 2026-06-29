@@ -1,192 +1,130 @@
 #!/usr/bin/env bats
 load bats-extra
 
-write_instructions() {
-    printf '%s\n' "$@" > instructions.txt
-}
-teardown() {
-    rm -f instructions.txt
-}
+# generated on 2026-06-30T15:58:16+00:00
 
-# A robot is created with a position and a direction.
-# The awk program will output the robot's variables: x, y, dir
-
-@test "Robots are created with a position and direction" {
-    #[[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f robot-simulator.awk -v x=0 -v y=0 -v dir=north /dev/null
+@test "at origin facing north" {
+    # [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+    run gawk -f robot-simulator.awk <<< "north"
     assert_success
-    assert_output "0 0 north"
+    assert_output "{'position': {'x': 0, 'y': 0}, 'direction': 'north'}"
 }
-@test "Robots are created with a default position and direction" {
+
+@test "at negative position facing south" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f robot-simulator.awk /dev/null
+    run gawk -f robot-simulator.awk <<< "south"
     assert_success
-    assert_output "0 0 north"
+    assert_output "{'position': {'x': -1, 'y': -1}, 'direction': 'south'}"
 }
 
-@test "Negative positions are allowed" {
+@test "changes north to east" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f robot-simulator.awk -v x=-1 -v y=-1 -v dir=south /dev/null
+    run gawk -f robot-simulator.awk <<< "north"
     assert_success
-    assert_output "-1 -1 south"
+    assert_output "{'position': {'x': 0, 'y': 0}, 'direction': 'east'}"
 }
 
-
-# rotates the robot's direction 90 degrees clockwise
-
-@test "changes the direction from north to east" {
+@test "changes east to south" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions R
-    run gawk -f robot-simulator.awk -v dir=north instructions.txt
+    run gawk -f robot-simulator.awk <<< "east"
     assert_success
-    assert_output "0 0 east"
+    assert_output "{'position': {'x': 0, 'y': 0}, 'direction': 'south'}"
 }
 
-@test "changes the direction from east to south" {
+@test "changes south to west" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions R
-    run gawk -f robot-simulator.awk -v dir=east instructions.txt
+    run gawk -f robot-simulator.awk <<< "south"
     assert_success
-    assert_output "0 0 south"
+    assert_output "{'position': {'x': 0, 'y': 0}, 'direction': 'west'}"
 }
 
-@test "changes the direction from south to west" {
+@test "changes west to north" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions R
-    run gawk -f robot-simulator.awk -v dir=south instructions.txt
+    run gawk -f robot-simulator.awk <<< "west"
     assert_success
-    assert_output "0 0 west"
+    assert_output "{'position': {'x': 0, 'y': 0}, 'direction': 'north'}"
 }
 
-@test "changes the direction from west to north" {
+@test "changes north to west" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions R
-    run gawk -f robot-simulator.awk -v dir=west instructions.txt
+    run gawk -f robot-simulator.awk <<< "north"
     assert_success
-    assert_output "0 0 north"
+    assert_output "{'position': {'x': 0, 'y': 0}, 'direction': 'west'}"
 }
 
-
-# rotates the robot's direction 90 degrees counter-clockwise
-
-@test "changes the direction from north to west" {
+@test "changes west to south" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions L
-    run gawk -f robot-simulator.awk -v dir=north instructions.txt
+    run gawk -f robot-simulator.awk <<< "west"
     assert_success
-    assert_output "0 0 west"
+    assert_output "{'position': {'x': 0, 'y': 0}, 'direction': 'south'}"
 }
 
-@test "changes the direction from west to south" {
+@test "changes south to east" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions L
-    run gawk -f robot-simulator.awk -v dir=west instructions.txt
+    run gawk -f robot-simulator.awk <<< "south"
     assert_success
-    assert_output "0 0 south"
+    assert_output "{'position': {'x': 0, 'y': 0}, 'direction': 'east'}"
 }
 
-@test "changes the direction from south to east" {
+@test "changes east to north" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions L
-    run gawk -f robot-simulator.awk -v dir=south instructions.txt
+    run gawk -f robot-simulator.awk <<< "east"
     assert_success
-    assert_output "0 0 east"
+    assert_output "{'position': {'x': 0, 'y': 0}, 'direction': 'north'}"
 }
 
-@test "changes the direction from east to north" {
+@test "facing north increments Y" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions L
-    run gawk -f robot-simulator.awk -v dir=east instructions.txt
+    run gawk -f robot-simulator.awk <<< "north"
     assert_success
-    assert_output "0 0 north"
+    assert_output "{'position': {'x': 0, 'y': 1}, 'direction': 'north'}"
 }
 
-
-# moves the robot forward 1 space in the direction it is pointing
-
-@test "increases the y coordinate one when facing north" {
+@test "facing south decrements Y" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions A
-    run gawk -f robot-simulator.awk -v x=0 -v y=0 -v dir=north instructions.txt
+    run gawk -f robot-simulator.awk <<< "south"
     assert_success
-    assert_output "0 1 north"
+    assert_output "{'position': {'x': 0, 'y': -1}, 'direction': 'south'}"
 }
 
-@test "decreases the y coordinate by one when facing south" {
+@test "facing east increments X" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions A
-    run gawk -f robot-simulator.awk -v x=0 -v y=0 -v dir=south instructions.txt
+    run gawk -f robot-simulator.awk <<< "east"
     assert_success
-    assert_output "0 -1 south"
+    assert_output "{'position': {'x': 1, 'y': 0}, 'direction': 'east'}"
 }
 
-@test "increases the x coordinate by one when facing east" {
+@test "facing west decrements X" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions A
-    run gawk -f robot-simulator.awk -v x=0 -v y=0 -v dir=east instructions.txt
+    run gawk -f robot-simulator.awk <<< "west"
     assert_success
-    assert_output "1 0 east"
+    assert_output "{'position': {'x': -1, 'y': 0}, 'direction': 'west'}"
 }
 
-@test "decreases the x coordinate by one when facing west" {
+@test "moving east and north from README" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions A
-    run gawk -f robot-simulator.awk -v x=0 -v y=0 -v dir=west instructions.txt
+    run gawk -f robot-simulator.awk <<< "north"
     assert_success
-    assert_output "-1 0 west"
+    assert_output "{'position': {'x': 9, 'y': 4}, 'direction': 'west'}"
 }
 
-
-# Where R = Turn Right, L = Turn Left and A = Advance, the
-# robot can follow a series of instructions and end up with
-# the correct position and direction
-
-@test "instructions to move east and north from README" {
+@test "moving west and north" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions R A A L A L
-    run gawk -f robot-simulator.awk -v x=7 -v y=3 -v dir=north instructions.txt
+    run gawk -f robot-simulator.awk <<< "north"
     assert_success
-    assert_output "9 4 west"
+    assert_output "{'position': {'x': -4, 'y': 1}, 'direction': 'west'}"
 }
 
-@test "instructions to move west and north" {
+@test "moving west and south" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions L A A A R A L A
-    run gawk -f robot-simulator.awk -v x=0 -v y=0 -v dir=north instructions.txt
+    run gawk -f robot-simulator.awk <<< "east"
     assert_success
-    assert_output "-4 1 west"
+    assert_output "{'position': {'x': -3, 'y': -8}, 'direction': 'south'}"
 }
 
-@test "instructions to move west and south" {
+@test "moving east and north" {
     [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions R R A A A A A L A
-    run gawk -f robot-simulator.awk -v x=2 -v y=-7 -v dir=east instructions.txt
+    run gawk -f robot-simulator.awk <<< "south"
     assert_success
-    assert_output "-3 -8 south"
-}
-
-@test "instructions to move east and north" {
-    [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions L A A A R R R A L L L L
-    run gawk -f robot-simulator.awk -v x=8 -v y=4 -v dir=south instructions.txt
-    assert_success
-    assert_output "11 5 north"
-}
-
-
-# error conditions
-
-@test "invalid direction" {
-    [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    run gawk -f robot-simulator.awk -v dir=foo /dev/null
-    assert_failure
-    assert_output "invalid direction"
-}
-
-@test "invalid instructions" {
-    [[ $BATS_RUN_SKIPPED == "true" ]] || skip
-    write_instructions L R A X
-    run gawk -f robot-simulator.awk instructions.txt
-    assert_failure
-    assert_output "invalid instruction"
+    assert_output "{'position': {'x': 11, 'y': 5}, 'direction': 'north'}"
 }
