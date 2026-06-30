@@ -1,6 +1,8 @@
 #!/usr/bin/env bats
 load bats-extra
 
+# generated on 2026-06-30T17:59:31+00:00
+
 @test "Say Hi!" {
   run gawk -f hello-world.awk
 
@@ -10,3 +12,4 @@ load bats-extra
   # program's output should be the expected text
   assert_output "Hello, World!"
 }
+
